@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class NewBehaviourScript : MonoBehaviourPunCallbacks, ILobbyCallbacks
+public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
     [Header("Screens")]
     public GameObject mainScreen;
@@ -31,12 +31,13 @@ public class NewBehaviourScript : MonoBehaviourPunCallbacks, ILobbyCallbacks
     private List<RoomInfo> roomList = new List<RoomInfo>();
     private bool isConnectedToMaster = false;
 
+
     // Start is called before the first frame update
     void Start()
     {
         //disable the menus buttons at the start of the game
-        //createRoomButton.interactable = false;
-        //findRoomButton.interactable = false;
+        createRoomButton.interactable = false;
+        findRoomButton.interactable = false;
 
         //enable cursor
         Cursor.lockState = CursorLockMode.None;
@@ -97,11 +98,11 @@ public class NewBehaviourScript : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public void OnCreateButton(TMP_InputField roomNameInput)
     {
-        if (NetworkManager.instance == null)
+        /*if (NetworkManager.instance == null)
         {
             Debug.LogError("NetworkManager.instance est null");
             return;
-        }
+        }*/
 
         if (roomNameInput == null)
         {
