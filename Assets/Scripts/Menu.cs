@@ -150,6 +150,9 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
         PhotonNetwork.CurrentRoom.IsVisible = false;
 
         //Tell everyone  to load to the game sccene
+        Debug.Log(NetworkManager.instance);
+        Debug.Log(NetworkManager.instance.photonView);
+
         NetworkManager.instance.photonView.RPC("ChangeScene", RpcTarget.All, "Game");
     }
 
