@@ -11,6 +11,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //singleton
     public static NetworkManager instance;
 
+
     private void Awake()
      {
          if(instance != null && instance != this)
@@ -21,9 +22,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
          {
              instance = this;
              DontDestroyOnLoad(gameObject);
-
          }
-
      }
 
      private void Start()

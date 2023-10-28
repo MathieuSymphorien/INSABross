@@ -27,12 +27,29 @@ public class PlayerController : MonoBehaviourPun
     public bool isDead;
 
     public static PlayerController me;
+    public HeaderInformation headerInfo;
+
+
     public float jumpForce = 10f;
     public float moveAcceleration = 50f;
     private bool isJumping = false;
     public LayerMask groundLayer;
     public Transform groundCheck;
     private bool isGrounded;
+
+    /*[PunRPC]
+    public void Initialized(PlayerController player)
+    {
+        id = player.ActorNumber;
+        photonPlayer = player;
+        GameManager.instance.players[id - 1] = this;
+        headerInfo.Initialized(player.Nickname, maxHP);
+
+        if (player.Islocal)
+            me = this;
+        else
+            rig.isKinematic = false;
+    }*/
 
     void Update()
     {
@@ -123,6 +140,7 @@ public class PlayerController : MonoBehaviourPun
             Enemy enemy = hit.collider.GetComponent<Enemy>();
             //DAmage to enemy
         }
+        playerAnim.SetTrigger("Attack");
     }
 
 
@@ -130,6 +148,7 @@ public class PlayerController : MonoBehaviourPun
     public void TakeDamage(int damageAmount)
     {
         currentHP -= damageAmount;
+        headerInfo.photonView.RPC("UpdateHealthBar", RpcTarget.All, currentHP);
         if(currentHP <= 0)
         {
             //Die
