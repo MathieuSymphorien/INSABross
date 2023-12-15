@@ -98,18 +98,22 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
 
     public void OnCreateButton(TMP_InputField roomNameInput)
     {
-        /*if (NetworkManager.instance == null)
+        if (NetworkManager.instance == null)
         {
             Debug.LogError("NetworkManager.instance est null");
             return;
-        }*/
+        }
 
         if (roomNameInput == null)
         {
             Debug.LogError("roomNameInput est null");
             return;
         }
-        NetworkManager.instance.CreateRoom(roomNameInput.text);
+
+        //ajouter la possibilité de rendre la taille de salle modudable (relié ca a un bouton)
+        int maxPlayer = 8;
+
+        NetworkManager.instance.CreateRoom(roomNameInput.text, maxPlayer);
     }
 
     public override void OnJoinedRoom()

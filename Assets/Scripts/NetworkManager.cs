@@ -6,7 +6,7 @@ using Photon.Realtime;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    public int maxPlayers;
+    //public int maxPlayers;
 
     //singleton
     public static NetworkManager instance;
@@ -37,7 +37,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
          PhotonNetwork.JoinLobby();
      }
 
-     public void CreateRoom(string roomName)
+     public void CreateRoom(string roomName, int maxPlayers)
      {
          //creating different room
          RoomOptions options = new RoomOptions();
@@ -55,6 +55,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
       [PunRPC]
       public void ChangeScene(string sceneName)
       {
-          PhotonNetwork.LoadLevel(sceneName);
+        // Trouver tous les PhotonView dans la scène
+        PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
+
+        // Réinitialiser l'ID de chaque PhotonView (sinon la transition se fait mal entre les scènes et des id peuvent etre pareil se qui donne une erreur). Ici le systeme re attribue automatiquement les id
+        foreach (PhotonView view in photonViews)
+        {
+            view.ViewID = 0;
+        }
+        PhotonNetwork.LoadLevel(sceneName);
       }
 }

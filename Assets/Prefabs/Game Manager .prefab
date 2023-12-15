@@ -46,8 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefabPath: 
-  spawnPoint: []
-  respawnTime: 0
+  spawnPoint:
+  - {fileID: 0}
+  respawnTime: 4
+  playersInGame: 0
+  players: []
 --- !u!114 &5158139656428955307
 MonoBehaviour:
   m_ObjectHideFlags: 0
