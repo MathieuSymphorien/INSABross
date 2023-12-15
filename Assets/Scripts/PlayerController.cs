@@ -37,19 +37,19 @@ public class PlayerController : MonoBehaviourPun
     public Transform groundCheck;
     private bool isGrounded;
 
-    /*[PunRPC]
-    public void Initialized(PlayerController player)
+    [PunRPC]
+    public void Initialized(Player player)
     {
         id = player.ActorNumber;
         photonPlayer = player;
         GameManager.instance.players[id - 1] = this;
-        headerInfo.Initialized(player.Nickname, maxHP);
+        headerInfo.Initialized(player.NickName, maxHP);
 
-        if (player.Islocal)
+        if (player.IsLocal)
             me = this;
         else
             rig.isKinematic = false;
-    }*/
+    }
 
     void Update()
     {

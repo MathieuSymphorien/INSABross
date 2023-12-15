@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviourPun
     public string playerPrefabPath;
     public Transform[] spawnPoint;
     public float respawnTime;
-    private int playersInGame;
+    public int playersInGame;
+    public PlayerController[] players;
 
     public static GameManager instance;
 
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviourPun
     void Start()
     {
         photonView.RPC("ImInGame", RpcTarget.AllBuffered);
+        players = new PlayerController[PhotonNetwork.CurrentRoom.MaxPlayers];
     }
 
     // Update is called once per frame
@@ -41,15 +43,47 @@ public class GameManager : MonoBehaviourPun
         //spawn player depend on the list of player that joined the lobby room
         if(playersInGame == PhotonNetwork.PlayerList.Length)
         {
-            SpawnPlayer();
+            SpawnPlayer2();
         }
     }
 
     void SpawnPlayer()
     {
+        if (playerPrefabPath == null || playerPrefabPath == "")
+        {
+            Debug.LogError("Le chemin du préfab du joueur n'est pas défini.");
+            return;
+        }
         //spawn player randomly in spawn point list position
         GameObject playerObject = PhotonNetwork.Instantiate(playerPrefabPath, spawnPoint[Random.Range(0, spawnPoint.Length)].position,Quaternion.identity);
 
         //instantiate
     }
+
+    void SpawnPlayer2()
+    {
+        if (playerPrefabPath == null || playerPrefabPath == "")
+        {
+            Debug.LogError("Le chemin du préfab du joueur n'est pas défini.");
+            return;
+        }
+
+        // Spawn player randomly in spawn point list position
+        GameObject playerObject = PhotonNetwork.Instantiate(playerPrefabPath, spawnPoint[Random.Range(0, spawnPoint.Length)].position, Quaternion.identity);
+
+        // Initialize the player
+        PlayerController playerController = playerObject.GetComponent<PlayerController>();
+
+        if (playerController != null)
+        {
+            // Vous pouvez ajouter un appel à une fonction RPC ici pour initialiser le joueur,
+            // ou faire d'autres configurations spécifiques nécessaires.
+            playerController.photonView.RPC("Initialized", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer);
+        }
+        else
+        {
+            Debug.LogError("Le préfab instancié ne contient pas de composant PlayerController.");
+        }
+    }
+
 }

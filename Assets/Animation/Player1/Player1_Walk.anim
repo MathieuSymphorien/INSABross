@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player1_Walk
+  m_Name: Player1_walk
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -20,12 +20,16 @@ AnimationClip:
   m_PPtrCurves:
   - serializedVersion: 2
     curve:
-    - time: 0
+    - time: 0.016666668
       value: {fileID: -1553130892, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
-    - time: 0.23333333
+    - time: 0.16666667
       value: {fileID: -224963228, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
-    - time: 0.41666666
+    - time: 0.33333334
       value: {fileID: -1449006414, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
+    - time: 0.5
+      value: {fileID: -224963228, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
+    - time: 0.6666667
+      value: {fileID: -1553130892, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -51,12 +55,14 @@ AnimationClip:
     - {fileID: -1553130892, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
     - {fileID: -224963228, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
     - {fileID: -1449006414, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
+    - {fileID: -224963228, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
+    - {fileID: -1553130892, guid: faded5d346268944aaf72dc0f9a40647, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.43333334
+    m_StopTime: 0.68333334
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -75,4 +81,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.11666667
+    functionName: 
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
