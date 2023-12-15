@@ -34,7 +34,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
      public override void OnConnectedToMaster()
      {
-         PhotonNetwork.JoinLobby();
+        Debug.Log("Connecté au serveur maître.");
+        PhotonNetwork.JoinLobby();
      }
 
      public void CreateRoom(string roomName, int maxPlayers)
@@ -49,8 +50,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
       public void JoinRoom(string roomName)
       {
-          PhotonNetwork.JoinRoom(roomName);
-      }
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            PhotonNetwork.JoinRoom(roomName);
+        }
+        else
+        {
+            Debug.LogError("Client non prêt pour les opérations. Etat actuel: " + PhotonNetwork.NetworkClientState);
+            // Vous pouvez choisir de reconnecter ici ou d'alerter l'utilisateur
+        }
+    }
 
       [PunRPC]
       public void ChangeScene(string sceneName)
