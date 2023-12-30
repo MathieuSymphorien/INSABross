@@ -4,10 +4,11 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
+
 public class PlayerController : MonoBehaviourPun
 {
 
-    public Transform attackpoint;
+    public BoxCollider2D attackpoint;
     public int damage;
     public float attackRange;
     public float attackDelay;
@@ -32,7 +33,7 @@ public class PlayerController : MonoBehaviourPun
 
     public float jumpForce = 10f;
     public float moveAcceleration = 50f;
-    private bool isJumping = false;
+    //private bool isJumping = false;
     public LayerMask groundLayer;
     public Transform groundCheck;
     private bool isGrounded;
@@ -57,7 +58,7 @@ public class PlayerController : MonoBehaviourPun
             return;
 
         Move();
-
+        
         // Check if the player is grounded
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
 
@@ -67,7 +68,8 @@ public class PlayerController : MonoBehaviourPun
         }
 
         if (Input.GetMouseButtonDown(0) && Time.time - lastAttackTime > attackDelay)
-            Attack();
+            playerAnim.SetTrigger("Attack");
+            //Attack();
     }
 
     private void Move()
@@ -87,16 +89,23 @@ public class PlayerController : MonoBehaviourPun
         if (x == 0 && isGrounded)
         {
             rig.velocity = new Vector2(0, rig.velocity.y);
+            
         }
 
         // Flip the sprite based on movement direction
         if (x > 0) // Moving right
         {
             GetComponent<SpriteRenderer>().flipX = false;
+            playerAnim.SetBool("Move", true);
         }
         else if (x < 0) // Moving left
         {
             GetComponent<SpriteRenderer>().flipX = true;
+            playerAnim.SetBool("Move", true);
+        }
+        else
+        {
+            playerAnim.SetBool("Move", false);
         }
     }
 
@@ -128,20 +137,63 @@ public class PlayerController : MonoBehaviourPun
         rig.velocity = new Vector2(x, y) * moveSpeed;
     }*/
 
-    void Attack()
-    {
+ 
+    void Attack() { 
+
         //reset attack delay time
         lastAttackTime = Time.time;
+
+       
+        attackpoint.enabled = true;
+        // Appeler une coroutine pour désactiver le collider après un court délai
+        StartCoroutine(DisableColliderAfterDelay());
+
         //send raycast in front of player
-        RaycastHit2D hit = Physics2D.Raycast(attackpoint.position, transform.forward, attackRange);
-        playerAnim.SetTrigger("Attack");
-        if(hit.collider != null && hit.collider.gameObject.CompareTag("Enemy"))
+        //RaycastHit2D hit = Physics2D.Raycast(attackpoint.position, transform.forward, attackRange);
+
+        /*if(hit.collider != null && hit.collider.gameObject.CompareTag("PlayerBody"))
         {
             Enemy enemy = hit.collider.GetComponent<Enemy>();
-            //DAmage to enemy
-        }
-        playerAnim.SetTrigger("Attack");
+
+            // Do damage to enemy
+            //enemy.photonView.RPC("TakeDamage"); 
+
+        }*/
     }
+
+    IEnumerator DisableColliderAfterDelay()
+    {
+        // Attendre un court délai
+        yield return new WaitForSeconds(0.5f); // Ajustez cette durée selon la durée de l'animation d'attaque
+
+        // Désactiver le BoxCollider2D
+        attackpoint.enabled = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("nom " + other.name);
+        if (other.CompareTag("Player"))
+        {
+            TakeDamage(4);
+            // Obtenez le PhotonView de l'ennemi
+            PhotonView enemyPhotonView = other.GetComponent<PhotonView>();
+
+            // Vérifiez si l'ennemi a un PhotonView et si vous êtes le joueur local
+            if (enemyPhotonView != null && photonView.IsMine)
+            {
+                // Infligez des dégâts en utilisant RPC
+      
+                enemyPhotonView.RPC("TakeDamage", RpcTarget.All, damage);
+            }
+        }
+        else if (other.CompareTag("punch"))
+        {
+            Debug.Log("item");
+        }
+    }
+
+
 
 
     [PunRPC]
