@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class NewBehaviourScript : MonoBehaviourPunCallbacks, ILobbyCallbacks
+public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
     [Header("Screens")]
     public GameObject mainScreen;
@@ -31,12 +31,13 @@ public class NewBehaviourScript : MonoBehaviourPunCallbacks, ILobbyCallbacks
     private List<RoomInfo> roomList = new List<RoomInfo>();
     private bool isConnectedToMaster = false;
 
+
     // Start is called before the first frame update
     void Start()
     {
         //disable the menus buttons at the start of the game
-        //createRoomButton.interactable = false;
-        //findRoomButton.interactable = false;
+        createRoomButton.interactable = false;
+        findRoomButton.interactable = false;
 
         //enable cursor
         Cursor.lockState = CursorLockMode.None;
@@ -108,7 +109,11 @@ public class NewBehaviourScript : MonoBehaviourPunCallbacks, ILobbyCallbacks
             Debug.LogError("roomNameInput est null");
             return;
         }
-        NetworkManager.instance.CreateRoom(roomNameInput.text);
+
+        //ajouter la possibilité de rendre la taille de salle modudable (relié ca a un bouton)
+        int maxPlayer = 8;
+
+        NetworkManager.instance.CreateRoom(roomNameInput.text, maxPlayer);
     }
 
     public override void OnJoinedRoom()
@@ -149,6 +154,9 @@ public class NewBehaviourScript : MonoBehaviourPunCallbacks, ILobbyCallbacks
         PhotonNetwork.CurrentRoom.IsVisible = false;
 
         //Tell everyone  to load to the game sccene
+        Debug.Log(NetworkManager.instance);
+        Debug.Log(NetworkManager.instance.photonView);
+
         NetworkManager.instance.photonView.RPC("ChangeScene", RpcTarget.All, "Game");
     }
 
