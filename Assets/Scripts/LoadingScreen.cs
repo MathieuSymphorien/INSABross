@@ -9,12 +9,14 @@ public class LoadingScreen : MonoBehaviour
     public AudioClip[] loadingSounds; // Tableau pour stocker les différents AudioClips
 
     private AudioSource audioSource; // AudioSource pour jouer le son
+    
 
     private void Start()
     {
         // Initialiser l'AudioSource
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
+        
 
         // Choisir un AudioClip aléatoire et le jouer
         if (loadingSounds.Length > 0)

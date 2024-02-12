@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 077fb14ff6960a0419b56e4cd296093a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefabPath: 
+  playerPrefabPath: s
   spawnPoint:
   - {fileID: 0}
   respawnTime: 4

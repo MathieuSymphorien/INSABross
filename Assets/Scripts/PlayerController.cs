@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void Initialized(Player player)
     {
+        Debug.Log("I m initialized");
         id = player.ActorNumber;
         photonPlayer = player;
         GameManager.instance.players[id - 1] = this;
@@ -49,7 +50,9 @@ public class PlayerController : MonoBehaviourPun
         if (player.IsLocal)
             me = this;
         else
-            rig.isKinematic = false;
+            rig.isKinematic = true;
+
+
     }
 
     void Update()
@@ -175,7 +178,7 @@ public class PlayerController : MonoBehaviourPun
         Debug.Log("nom " + other.name);
         if (other.CompareTag("Player"))
         {
-            TakeDamage(4);
+            //TakeDamage(4);
             // Obtenez le PhotonView de l'ennemi
             PhotonView enemyPhotonView = other.GetComponent<PhotonView>();
 
