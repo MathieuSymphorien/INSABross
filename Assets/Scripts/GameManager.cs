@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviourPun
 
     public static GameManager instance;
 
+    [Header("Music Stage")]
+    public AudioSource stageMusic;
+
     private void Awake()
     {
         instance = this;
@@ -25,6 +28,9 @@ public class GameManager : MonoBehaviourPun
     {
         photonView.RPC("ImInGame", RpcTarget.AllBuffered);
         players = new PlayerController[PhotonNetwork.CurrentRoom.MaxPlayers];
+
+        stageMusic = GetComponent<AudioSource>();
+        stageMusic.Play();
     }
 
     // Update is called once per frame
@@ -38,30 +44,23 @@ public class GameManager : MonoBehaviourPun
     {
         //add one to playerer in game variable for every player join the game
         playersInGame++;
-
+        Debug.Log("in game");
+        
+        Debug.Log(PhotonNetwork.PlayerList.Length);
 
         //spawn player depend on the list of player that joined the lobby room
-        if(playersInGame == PhotonNetwork.PlayerList.Length)
+        if (playersInGame == PhotonNetwork.PlayerList.Length)
         {
+            Debug.Log("in if");
             SpawnPlayer2();
         }
     }
 
-    void SpawnPlayer()
-    {
-        if (playerPrefabPath == null || playerPrefabPath == "")
-        {
-            Debug.LogError("Le chemin du préfab du joueur n'est pas défini.");
-            return;
-        }
-        //spawn player randomly in spawn point list position
-        GameObject playerObject = PhotonNetwork.Instantiate(playerPrefabPath, spawnPoint[Random.Range(0, spawnPoint.Length)].position,Quaternion.identity);
-
-        //instantiate
-    }
+    
 
     void SpawnPlayer2()
     {
+        Debug.Log("Spawn");
         if (playerPrefabPath == null || playerPrefabPath == "")
         {
             Debug.LogError("Le chemin du préfab du joueur n'est pas défini.");
@@ -84,6 +83,19 @@ public class GameManager : MonoBehaviourPun
         {
             Debug.LogError("Le préfab instancié ne contient pas de composant PlayerController.");
         }
+    }
+
+    void SpawnPlayer()
+    {
+        if (playerPrefabPath == null || playerPrefabPath == "")
+        {
+            Debug.LogError("Le chemin du préfab du joueur n'est pas défini.");
+            return;
+        }
+        //spawn player randomly in spawn point list position
+        GameObject playerObject = PhotonNetwork.Instantiate(playerPrefabPath, spawnPoint[Random.Range(0, spawnPoint.Length)].position, Quaternion.identity);
+
+        //instantiate
     }
 
 }

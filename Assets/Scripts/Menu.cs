@@ -31,6 +31,10 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
     private List<RoomInfo> roomList = new List<RoomInfo>();
     private bool isConnectedToMaster = false;
 
+    [Header("Music")]
+    public AudioSource mainMusic;
+    
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +42,9 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
         //disable the menus buttons at the start of the game
         createRoomButton.interactable = false;
         findRoomButton.interactable = false;
+
+        mainMusic = GetComponent<AudioSource>();
+        mainMusic.Play();
 
         //enable cursor
         Cursor.lockState = CursorLockMode.None;
