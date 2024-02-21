@@ -10,10 +10,16 @@ public class PlayerController : MonoBehaviourPun
 
     public BoxCollider2D attackpoint;
     public int damage;
-    public float attackRange;
+    public int baseDamage; 
+    public int enhancedDamage; // La force d'attaque augmentée par le power-up
+    public float powerUpDuration = 5f; //durée du power up
+    //public float attackRange;
     public float attackDelay;
     public float lastAttackTime;
-   
+    public Transform attackPos;
+
+    public int lifes;
+
     [HideInInspector]
     public int id;
     public Animator playerAnim;
@@ -22,10 +28,10 @@ public class PlayerController : MonoBehaviourPun
     public SpriteRenderer sr;
     //public HeaderInfo headerInfo;
     public float moveSpeed;
-    public int gold;
     public int currentHP;
     public int maxHP;
     public bool isDead;
+    
 
     public static PlayerController me;
     public HeaderInformation headerInfo;
@@ -43,6 +49,7 @@ public class PlayerController : MonoBehaviourPun
     {
         id = player.ActorNumber;
         photonPlayer = player;
+        damage = baseDamage;
         GameManager.instance.players[id - 1] = this;
         headerInfo.Initialized(player.NickName, maxHP);
 
@@ -54,6 +61,7 @@ public class PlayerController : MonoBehaviourPun
 
     void Update()
     {
+        PhotonNetwork.OfflineMode = true;
         if (!photonView.IsMine)
             return;
 
@@ -67,7 +75,7 @@ public class PlayerController : MonoBehaviourPun
             Jump();
         }
 
-        if (Input.GetMouseButtonDown(0) && Time.time - lastAttackTime > attackDelay)
+        if (Input.GetKeyDown(KeyCode.P) && Time.time - lastAttackTime > attackDelay)
             playerAnim.SetTrigger("Attack");
             //Attack();
     }
@@ -97,11 +105,15 @@ public class PlayerController : MonoBehaviourPun
         {
             GetComponent<SpriteRenderer>().flipX = false;
             playerAnim.SetBool("Move", true);
+            attackPos.localPosition = new Vector3(4.82f, attackPos.localPosition.y, attackPos.localPosition.z);
+
         }
         else if (x < 0) // Moving left
         {
             GetComponent<SpriteRenderer>().flipX = true;
             playerAnim.SetBool("Move", true);
+            attackPos.localPosition = new Vector3(-4.82f, attackPos.localPosition.y, attackPos.localPosition.z);
+
         }
         else
         {
@@ -115,27 +127,7 @@ public class PlayerController : MonoBehaviourPun
         rig.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
     }
 
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-        if (!photonView.IsMine)
-            return;
-
-        Move();
-        if(Input.GetMouseButtonDown(0) && Time.time - lastAttackTime > attackDelay)
-            Attack();
-    }
-
-    private void Move()
-    {
-        //get the horizontal and vertical input value
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-
-        //apply  the value to our velocity
-        rig.velocity = new Vector2(x, y) * moveSpeed;
-    }*/
+    
 
  
     void Attack() { 
@@ -148,17 +140,6 @@ public class PlayerController : MonoBehaviourPun
         // Appeler une coroutine pour désactiver le collider après un court délai
         StartCoroutine(DisableColliderAfterDelay());
 
-        //send raycast in front of player
-        //RaycastHit2D hit = Physics2D.Raycast(attackpoint.position, transform.forward, attackRange);
-
-        /*if(hit.collider != null && hit.collider.gameObject.CompareTag("PlayerBody"))
-        {
-            Enemy enemy = hit.collider.GetComponent<Enemy>();
-
-            // Do damage to enemy
-            //enemy.photonView.RPC("TakeDamage"); 
-
-        }*/
     }
 
     IEnumerator DisableColliderAfterDelay()
@@ -187,13 +168,41 @@ public class PlayerController : MonoBehaviourPun
                 enemyPhotonView.RPC("TakeDamage", RpcTarget.All, damage);
             }
         }
+        if (other.CompareTag("Bot")) 
+        {
+            // Obtenez le PhotonView du bot
+            PhotonView botPhotonView = other.GetComponent<PhotonView>();
+
+            if (botPhotonView != null)
+            {
+                // Infligez des dégâts au bot en utilisant RPC  
+                botPhotonView.RPC("TakeDamage", RpcTarget.All, damage);
+            }
+        }
+        if (other.CompareTag("PowerUpStrenght"))
+        {
+            Destroy(other.gameObject);
+            StartCoroutine(TempIncreaseDamage());
+        }
+        if (other.CompareTag("PowerUpSpeed"))
+        {
+            
+        }
         else if (other.CompareTag("punch"))
         {
             Debug.Log("item");
         }
     }
 
+    IEnumerator TempIncreaseDamage()
+    {
+        damage = enhancedDamage; // Augmentez la force d'attaque
 
+        // Attendre pendant la durée du power-up
+        yield return new WaitForSeconds(powerUpDuration);
+
+        damage = baseDamage; // Réinitialisez la force d'attaque à sa valeur de base
+    }
 
 
     [PunRPC]
@@ -226,12 +235,20 @@ public class PlayerController : MonoBehaviourPun
 
     void Die()
     {
+        lifes--;
         isDead = true;
         rig.isKinematic = true;
         transform.position = new Vector3(0, 90, 0);
-
-        Vector3 spawnPos = GameManager.instance.spawnPoint[Random.Range(0, GameManager.instance.spawnPoint.Length)].position;
-        StartCoroutine(Spawn(spawnPos, GameManager.instance.respawnTime));
+        if (lifes <= 0)
+        {
+            // notifie GameManager pour notifier qu'un joueur est mort
+            GameManager.instance.photonView.RPC("PlayerDied", RpcTarget.AllBuffered);
+        }
+        else
+        {
+            Vector3 spawnPos = GameManager.instance.spawnPoint[Random.Range(0, GameManager.instance.spawnPoint.Length)].position;
+            StartCoroutine(Spawn(spawnPos, GameManager.instance.respawnTime));
+        }
     }
 
     IEnumerator Spawn(Vector3 spawnPos, float timeToSpawn)
