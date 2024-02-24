@@ -718,10 +718,17 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
+<<<<<<< HEAD
   cloudProjectId: c6e23083-a78c-44d2-8006-95ec71d934a3
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: INSABross
+=======
+  cloudProjectId: a9f24c92-6ba4-45a7-b5a4-f6081fb009b9
+  framebufferDepthMemorylessMode: 0
+  qualitySettingsNames: []
+  projectName: Fight 2024-02-21_11-10-25
+>>>>>>> origin/only-game
   organizationId: unity_f7a71915e05fab7148d4
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

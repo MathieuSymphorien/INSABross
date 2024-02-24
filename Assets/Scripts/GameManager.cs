@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviourPun
 {
@@ -37,6 +38,19 @@ public class GameManager : MonoBehaviourPun
     void Update()
     {
         
+    }
+
+    [PunRPC]
+    public void PlayerDied()
+    {
+        playersInGame--;
+
+        // Vérifie si le jeu doit se terminer
+        if (playersInGame <= 1)
+        {
+            SceneManager.LoadScene("Menu");
+            Debug.Log("Jeu terminé");
+        }
     }
 
     [PunRPC]
