@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviourPun
     public float attackDelay;
     public float lastAttackTime;
     public Transform attackPos;
+    public bool isFlipped; // Cette variable représente l'état flipX du SpriteRenderer
+
 
     public int lifes;
 
@@ -58,13 +60,11 @@ public class PlayerController : MonoBehaviourPun
             me = this;
         else
             rig.isKinematic = true;
-
-
     }
 
     void Update()
     {
-        PhotonNetwork.OfflineMode = true;
+        //PhotonNetwork.OfflineMode = true;
         if (!photonView.IsMine)
             return;
 
@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviourPun
         // Flip the sprite based on movement direction
         if (x > 0) // Moving right
         {
+            FlipSprite(false);
             GetComponent<SpriteRenderer>().flipX = false;
             playerAnim.SetBool("Move", true);
             attackPos.localPosition = new Vector3(4.82f, attackPos.localPosition.y, attackPos.localPosition.z);
@@ -113,6 +114,7 @@ public class PlayerController : MonoBehaviourPun
         }
         else if (x < 0) // Moving left
         {
+            FlipSprite(true);
             GetComponent<SpriteRenderer>().flipX = true;
             playerAnim.SetBool("Move", true);
             attackPos.localPosition = new Vector3(-4.82f, attackPos.localPosition.y, attackPos.localPosition.z);
@@ -124,6 +126,12 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
+    public void FlipSprite(bool flipState)
+    {
+        GetComponent<SpriteRenderer>().flipX = flipState;
+        isFlipped = flipState; // Mettez à jour la variable locale
+    }
 
     private void Jump()
     {

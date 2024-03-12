@@ -4,18 +4,16 @@ using Photon.Pun;
 
 public class BotController : MonoBehaviourPunCallbacks
 {
-    public int maxHP = 100;
+    public int maxHP = 10;
     private int currentHP;
     public Transform spawnPoints; // Assurez-vous d'assigner un parent contenant plusieurs points de spawn comme enfants dans l'éditeur Unity
     public SpriteRenderer sr;
 
     void Start()
     {
-        PhotonNetwork.OfflineMode = true;
         currentHP = maxHP;
     }
 
-    [PunRPC]
     public void TakeDamage(int damageAmount)
     {
         currentHP -= damageAmount;

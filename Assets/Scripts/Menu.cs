@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
@@ -83,7 +84,7 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         System.Console.WriteLine("En train de se connecter");
         isConnectedToMaster = true;
-        Debug.Log("Connecté au serveur maître.");  // log
+        Debug.Log("Connecté au serveur maître. menu");  // log
         createRoomButton.interactable = true;
         findRoomButton.interactable = true;
     }
@@ -103,6 +104,11 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
         SetScreen(mainScreen);
     }
 
+    public void OnTrainingScreen()
+    {
+        SceneManager.LoadScene("Training");
+    }
+
     public void OnCreateButton(TMP_InputField roomNameInput)
     {
         if (NetworkManager.instance == null)
@@ -118,7 +124,7 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
         }
 
         //ajouter la possibilité de rendre la taille de salle modudable (relié ca a un bouton)
-        int maxPlayer = 8;
+        int maxPlayer = 20;
 
         NetworkManager.instance.CreateRoom(roomNameInput.text, maxPlayer);
     }
@@ -219,6 +225,7 @@ public class Menu : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         if (isConnectedToMaster)
         {
+            Debug.Log("avant l'appel de network manager ");
             NetworkManager.instance.JoinRoom(roomName);
             Debug.Log("Tentative de connexion à la salle : " + roomName);  // log
         }

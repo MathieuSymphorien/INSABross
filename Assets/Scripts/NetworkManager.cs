@@ -34,7 +34,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
      public override void OnConnectedToMaster()
      {
-        Debug.Log("Connecté au serveur maître.");
+        Debug.Log("Connecté au serveur maître. networking");
         PhotonNetwork.JoinLobby();
      }
 
@@ -43,25 +43,35 @@ public class NetworkManager : MonoBehaviourPunCallbacks
          //creating different room
          RoomOptions options = new RoomOptions();
          //max player
-         options.MaxPlayers = (byte)maxPlayers;
+         options.MaxPlayers = (byte)20;
          //Create room
          PhotonNetwork.CreateRoom(roomName, options);
      }
 
-      public void JoinRoom(string roomName)
-      {
-        if (PhotonNetwork.IsConnectedAndReady)
+    public void JoinRoom(string roomName)
+    {
+        if (!PhotonNetwork.IsConnectedAndReady)
+        {
+            Debug.LogError("Client non prêt pour les opérations. Etat actuel: " + PhotonNetwork.NetworkClientState);
+            // Gérer la reconnexion au serveur maître ici ou informer l'utilisateur
+            return; // Sortir tôt si pas prêt
+        }
+
+        // Vérifie si le client est déjà connecté au serveur maître
+        if (PhotonNetwork.NetworkingClient.Server == ServerConnection.MasterServer)
         {
             PhotonNetwork.JoinRoom(roomName);
         }
         else
         {
-            Debug.LogError("Client non prêt pour les opérations. Etat actuel: " + PhotonNetwork.NetworkClientState);
-            // Vous pouvez choisir de reconnecter ici ou d'alerter l'utilisateur
+            Debug.LogError("Le client n'est pas connecté au serveur maître. Etat actuel: " + PhotonNetwork.NetworkClientState);
+            // Gérer la redirection vers le serveur maître ici ou informer l'utilisateur
         }
     }
 
-      [PunRPC]
+
+
+    [PunRPC]
       public void ChangeScene(string sceneName)
       {
         // Trouver tous les PhotonView dans la scène
